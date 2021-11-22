@@ -4,6 +4,10 @@ on: push
 jobs:
   unit-test:
     name: Unit test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [10, 12]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,6 +31,11 @@ jobs:
         run: npm ci
       - name: Test
         run: npm test
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-coverage-${{ matrix.os }}-${{ matrix.node }}
+          path: coverage
   lint:
     name: Lint
     runs-on: ubuntu-latest
